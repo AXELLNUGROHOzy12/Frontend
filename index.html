@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard DOS</title>
+  <style>
+    body { background: #1e1e1e; color: #0f0; font-family: monospace; padding: 20px; }
+    input, select, button {
+      padding: 5px; margin: 5px; background: #222; color: #0f0; border: 1px solid #0f0;
+    }
+    .log { background: #000; padding: 10px; margin-top: 10px; height: 300px; overflow-y: auto; border: 1px solid #0f0; }
+  </style>
+</head>
+<body>
+
+<h2>☠ Dashboard DOS (Netlify + Render) ☠</h2>
+
+<form id="attackForm">
+  <label>Target: <input type="text" name="target" required></label><br>
+  <label>Port: <input type="number" name="port" value="80"></label><br>
+  <label>Mode:
+    <select name="mode">
+      <option value="http">HTTP</option>
+      <option value="socket">Socket</option>
+      <option value="all">All</option>
+    </select>
+  </label><br>
+  <label>Threads: <input type="number" name="threads" value="100"></label><br>
+  <button type="submit">Mulai Serangan</button>
+</form>
+
+<div class="log" id="log">[+] Siap menyerang...</div>
+
+<script>
+  const form = document.getElementById("attackForm");
+  const logBox = document.getElementById("log");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    logBox.innerHTML += `\n[~] Mengirim permintaan ke backend...`;
+
+    const res = await fetch("https://your-backend-name.onrender.com/start-attack", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    const json = await res.json();
+    logBox.innerHTML += `\n[✓] Serangan dimulai ke ${json.target}:${json.port} mode ${json.mode.toUpperCase()} dengan ${json.threads} threads.`;
+    logBox.scrollTop = logBox.scrollHeight;
+  });
+</script>
+
+</body>
+</html>
